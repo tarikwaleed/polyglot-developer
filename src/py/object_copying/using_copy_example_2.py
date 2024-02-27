@@ -12,5 +12,4 @@ original = {
 the_copy = copy(original)
 print(id(favourite_colors))
 print(id(original["favourite_colors"]))
-print(id(favourite_colors)==id(original["favourite_colors"]))
-
+print(id(favourite_colors) == id(original["favourite_colors"]))
