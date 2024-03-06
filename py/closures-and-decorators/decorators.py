@@ -53,30 +53,23 @@ def slow_down(func):
 
 
 def debug(func):
-
     """Print the function signature and return value"""
 
     @functools.wraps(func)
-
     def wrapper_debug(*args, **kwargs):
-
         args_repr = [repr(a) for a in args]
-
         kwargs_repr = [f"{k}={repr(v)}" for k, v in kwargs.items()]
-
         signature = ", ".join(args_repr + kwargs_repr)
-
         print(f"Calling {func.__name__}({signature})")
-
         value = func(*args, **kwargs)
-
         print(f"{func.__name__}() returned {repr(value)}")
-
         return value
 
     return wrapper_debug
 
+
 PLUGINS = dict()
+
 
 def register(func):
     """Register a function as a plug-in"""
@@ -91,5 +84,7 @@ def repeat(num_times):
             for _ in range(num_times):
                 value = func(*args, **kwargs)
             return value
+
         return wrapper_repeat
+
     return decorator_repeat
