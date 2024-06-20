@@ -62,7 +62,7 @@ def debug(func):
         signature = ", ".join(args_repr + kwargs_repr)
         print(f"Calling {func.__name__}({signature})")
         value = func(*args, **kwargs)
-        print(f"{func.__name__}() returned {repr(value)}")
+        print(f"{func.__name__}({signature}) returned {repr(value)}")
         return value
 
     return wrapper_debug

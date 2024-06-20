@@ -79,12 +79,52 @@ def condition_validator(validation_function):
             if any(not validation_function(arg) for arg in args):
               raise TypeError("arguments type not supported")
             if any(not validation_function(kwarg) for kwarg in kwargs.values()):
-                raise TypeError("arguments type not supported")
+                raise TypeError("keyword arguments type not supported")
             return func(*args, **kwargs)
         return wrapper
 
     return decorator
 
-def should_be_integer(data):
-  return isinstance(data,int) and data>0
 
+def retry(max_tries,delay):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args,**kwargs):
+            for _ in range(max_tries):
+                try:
+                    return_value=func(*args,**kwargs)
+                    return return_value
+                except Exception as e:
+                    print(f'an error has occured {e}. Retrying...')
+                    time.sleep(delay)
+            raise Exception("max numberretries reached")
+        return wrapper
+    return decorator
+
+
+# @retry(max_tries=3,delay=1)
+# def failure():
+#     raise Exception
+
+RATES=dict()
+def rate_limiter(limit):
+    def decorator(func):
+        RATES[func.__name__]=1
+        @functools.wraps(func)
+        def wrapper(*args,**kwargs):
+            if RATES[func.__name__]>limit:
+                raise Exception("exceeded the number of times you can call this function")
+            else:
+                RATES[func.__name__]+=1
+                return_value=func(*args,**kwargs)
+                return return_value
+        return wrapper
+    return decorator
+
+
+@rate_limiter(3)
+def foo():
+    print("hi")
+foo()
+foo()
+foo()
